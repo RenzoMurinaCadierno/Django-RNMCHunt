@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row mt-2">
+  <div class="col-2 mb-2">
+    <img src="{{ product.icon.url }}" class='img-fluid w-100'>
+  </div>
+  <div class="col-10">
+    <a href="{{ product.url }}"> <h1> {{ product.title }} </h1> </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <img src="{{ product.image.url }}" class='img-fluid'>
+  </div>
+  <div class="col-md-4">
+    <a href="javascript:document.querySelector('#upvote').submit()">
+
+      {% if request.user.username in votes.hunter.username and votes %}
+
+      <button id='down' class='btn btn-secondary btn-md btn-block'>
+        Downvote <span class='oi oi-thumb-down'></span> {{ product.get_votes.count }}
+      </button>
+
+      {% else %}
+
+      <button id="up" class='btn btn-primary btn-md btn-block'>
+        Upvote! <span class='oi oi-heart'></span> {{ product.get_votes.count }}
+      </button>
+
+      {% endif %}
+
+    </a>
+  </div>
+</div>
+
+<div class="row pt-2">
+  <div class="col-7 col-md-4">
+    <h4><span class='oi oi-target'></span> Hunter: {{ product.hunter.username }}</h4>
+  </div>
+  <div class="col-5 col-md-4 text-right">
+    <h4> <span class='oi oi-clock'></span> {{ product.pub_date_pretty }}</h4>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <p class='text-justify'> {{ product.body }} </p>
+  </div>
+</div>
+
+<!-- Form for upvoting, for browser GET/POST compatibility -->
+<form id="upvote" action="{% url 'upvote' product.id %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" />
+</form>
+
+{% endblock %}

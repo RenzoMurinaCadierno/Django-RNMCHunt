@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for product in products.all %}
+
+<!-- Window.location redirects to the product detail page -->
+
+<div class="row mt-3 pb-2">
+  <div class="col-3" onclick="window.location='{% url 'detail' product.id %}'" style="cursor: pointer;">
+    <img src="{{ product.icon.url }}" class='img-fluid'>
+  </div>
+  <div class="col-6" onclick="window.location='{% url 'detail' product.id %}'" style="cursor: pointer;">
+    <h1> {{ product.title }} </h1>
+    <p> {{ product.summary }} </p>
+  </div>
+  <div class="col-3">
+
+    <a id="buttons" href="javascript:document.querySelector('#upvote{{ product.id }}').submit()">
+
+      {% if request.user.username in votes.hunter.username and votes %}
+
+      <button id='down' class='btn btn-secondary btn-md btn-block'>
+        Downvote <span class='oi oi-thumb-down'></span> {{ product.get_votes.count }}
+      </button>
+
+      {% else %}
+
+      <button id="up" class='btn btn-primary btn-md btn-block'>
+        Upvote! <span class='oi oi-heart'></span> {{ product.get_votes.count }}
+      </button>
+
+      {% endif %}
+
+    </a>
+
+  </div>
+</div>
+
+<!-- Form for upvoting, for browser GET/POST compatibility -->
+<form id="upvote{{ product.id }}" action="{% url 'upvote' product.id %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" />
+</form>
+
+{% endfor %}
+
+{% endblock %}
